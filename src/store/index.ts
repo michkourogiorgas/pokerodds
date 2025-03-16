@@ -1,10 +1,33 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-// import { UICard } from "../types";
+import {
+  configureStore,
+  createSlice,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 import U from "./utils";
 import C from "./constants";
 
 const initialDeckState = U.getDeck();
 const initialTableState = C.table;
+const initialValidationState = C.VALIDATION;
+const initialResultState = C.INITIAL_RESULT_STATE;
+
+export const updateTableAsync = createAsyncThunk(
+  "table/updateTableAsync",
+  () => {
+    return "tableAsync complete";
+  }
+);
+
+export const removeCardAsync = createAsyncThunk("table/removeCardAsync", () => {
+  return "removeCardAsync complete";
+});
+
+export const validateAsync = createAsyncThunk(
+  "validation/validateAsync",
+  (_, { getState }) => {
+    return getState();
+  }
+);
 
 const deckSlice = createSlice({
   name: "deck",
@@ -22,26 +45,59 @@ const tableSlice = createSlice({
   initialState: initialTableState,
   reducers: {
     reset: () => initialTableState,
-    updateTable(state, action) {
-      const { position, slotIndex, cardIndex } = action.payload;
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateTableAsync.fulfilled, (state, action) => {
+      const { position, slotIndex, cardIndex } = action.meta.arg;
       state[position][slotIndex] = cardIndex;
+    });
+    builder.addCase(removeCardAsync.fulfilled, (state, action) => {
+      U.removeCard(state, action.meta.arg);
+    });
+  },
+});
+
+const validationSlice = createSlice({
+  name: "validation",
+  initialState: initialValidationState,
+  reducers: {
+    reset: () => initialValidationState,
+    validate: (state, action) => {
+      U.runValidation(state, action.payload);
     },
-    // updateCommunity(state, action) {
-    //   const card = state.community[action.payload.slot];
-    //   card.cardId = action.payload.cardId;
-    // },
-    removeCard(state, action) {
-      U.removeCard(state, action.payload);
+  },
+  extraReducers: (builder) => {
+    builder.addCase(validateAsync.fulfilled, (state, action) => {
+      U.runValidation(state, action.payload);
+    });
+  },
+});
+
+const resultsSlice = createSlice({
+  name: "results",
+  initialState: initialResultState,
+  reducers: {
+    reset: () => initialResultState,
+    updateResults: (state, action) => {
+      state.winners = action.payload.winners;
+      state.ties = action.payload.ties;
+      state.ranking = action.payload.ranking;
     },
-    // addPlayer: {},
-    // removelayer: {},
   },
 });
 
 const store = configureStore({
-  reducer: { deck: deckSlice.reducer, table: tableSlice.reducer },
+  reducer: {
+    deck: deckSlice.reducer,
+    table: tableSlice.reducer,
+    validation: validationSlice.reducer,
+    results: resultsSlice.reducer,
+  },
 });
 
 export const deckActions = deckSlice.actions;
 export const tableActions = tableSlice.actions;
+export const validationActions = validationSlice.actions;
+export const resultsActions = resultsSlice.actions;
+
 export default store;

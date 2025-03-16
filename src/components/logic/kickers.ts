@@ -29,7 +29,7 @@ const getCardByFrequency = (
 const straightFlush = (hand: Hand): number =>
   C.CARD_STRENGTH[hand[hand.length - 1].value];
 
-const quad = (cardsFrequency: FrequencyCounter): number => {
+const quads = (cardsFrequency: FrequencyCounter): number => {
   const quads = getCardByFrequency(cardsFrequency, 4);
   const highCard = getCardByFrequency(cardsFrequency, 1);
   return calculateKickersValue(...quads, ...highCard);
@@ -77,24 +77,14 @@ const highCard = (cardsFrequency: FrequencyCounter): number => {
   return calculateKickersValue(...sortedHighCards);
 };
 
-const getKickersValue = (
-  name: string,
-  hand: Hand,
-  cardsFrequency: FrequencyCounter
-): number => {
-  const mapHandToKickers: Record<string, number> = {
-    "Flush Royal": 0,
-    "Straight Flush": straightFlush(hand),
-    Quads: quad(cardsFrequency),
-    "Full House": fullHouse(cardsFrequency),
-    Flush: flush(hand),
-    Straight: straight(hand),
-    "Three of a Kind": threeOfAKind(cardsFrequency),
-    "Two Pairs": twoPairs(cardsFrequency),
-    "One Pair": onePair(cardsFrequency),
-    "High Card": highCard(cardsFrequency),
-  };
-  return mapHandToKickers[name];
+export default {
+  straightFlush,
+  quads,
+  fullHouse,
+  flush,
+  straight,
+  threeOfAKind,
+  twoPairs,
+  onePair,
+  highCard,
 };
-
-export { getKickersValue };

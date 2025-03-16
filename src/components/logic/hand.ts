@@ -1,5 +1,5 @@
 import C from "./constants";
-import { getKickersValue } from "./kickers";
+import K from "./kickers";
 import { Card, FrequencyCounter, Hand } from "../../types";
 
 const sortCards = (hand: Hand): Hand => {
@@ -62,6 +62,7 @@ const calculateHandStrength = (
   suitsFrequency: FrequencyCounter
 ) => {
   let name: string = "";
+  let kickers: number = 0;
   const {
     areCardsDifferent,
     isFlush,
@@ -76,24 +77,32 @@ const calculateHandStrength = (
     name = "Flush Royal";
   } else if (areCardsDifferent && isFlush && isStraight) {
     name = "Straight Flush";
+    kickers = K.straightFlush(hand);
   } else if (areCardsDifferent && isFlush) {
     name = "Flush";
+    kickers = K.flush(hand);
   } else if (areCardsDifferent && isStraight) {
     name = "Straight";
+    kickers = K.straight(hand);
   } else if (areCardsDifferent) {
     name = "High Card";
+    kickers = K.highCard(cardsFrequency);
   } else if (isQuads) {
     name = "Quads";
+    kickers = K.quads(cardsFrequency);
   } else if (isFullHouse) {
     name = "Full House";
+    kickers = K.fullHouse(cardsFrequency);
   } else if (isThreeOfAKind) {
     name = "Three of a Kind";
+    kickers = K.threeOfAKind(cardsFrequency);
   } else if (isTwoPair) {
     name = "Two Pairs";
+    kickers = K.twoPairs(cardsFrequency);
   } else {
     name = "One Pair";
+    kickers = K.onePair(cardsFrequency);
   }
-  const kickers = getKickersValue(name, hand, cardsFrequency);
   const value = C.HAND_STRENGTH[name];
   return { name, value, kickers };
 };

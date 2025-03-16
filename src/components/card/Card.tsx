@@ -1,6 +1,11 @@
 import { DragEvent } from "react";
 import { useDispatch } from "react-redux";
-import { deckActions, tableActions } from "../../store";
+import {
+  deckActions,
+  // tableActions,
+  removeCardAsync,
+  validateAsync,
+} from "../../store";
 import C from "./constants";
 
 type CardProps = {
@@ -27,22 +32,24 @@ const Card = ({
 
   const handleClick = () => {
     dispatch(deckActions.updateDeck({ cardIndex: index, isSelected: false }));
-    dispatch(tableActions.removeCard({ cardIndex: index }));
+    dispatch(removeCardAsync({ cardIndex: index })).then(() => {
+      dispatch(validateAsync());
+    });
   };
 
   return (
     <>
       <div
         id={index}
-        draggable={!isSelected}
+        draggable={!isSelected && !isHoverable}
         onDragStart={handleDragStart}
-        className={`group relative w-9 h-12 flex flex-col px-0.5 ${C.BG_COLOR[suit]} opacity-95
-            ${opacity} ${C.TEXT_COLOR[suit]} border-2 border-white text-white rounded-sm skew-x-0
-         `}
+        className={`group relative w-9.75 h-13 flex flex-col px-0.5 
+          ${C.BG_COLOR[suit]} ${opacity} ${C.TEXT_COLOR[suit]}
+          border-2 border-white text-white rounded-sm skew-x-0`}
       >
-        <div className="text-[7px] text-left">{value}</div>
+        <div className="text-[8px] text-left">{value}</div>
         <div className={`text-md text-center ${C.SUIT_SYMBOL[suit]}`} />
-        <div className="text-[7px] rotate-180">{value}</div>
+        <div className="text-[8px] rotate-180">{value}</div>
         <div
           onClick={handleClick}
           className={`hidden absolute inset-0 ${isVisible} items-center justify-center bg-black/70 ${C.TEXT_COLOR[suit]} text-lg cursor-pointer rounded-sm`}

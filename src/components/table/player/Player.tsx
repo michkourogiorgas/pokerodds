@@ -1,16 +1,23 @@
+import Typography from "../../typography";
 import CardSlot from "../cardSlot";
+import C from "./constants";
 
 const Player = ({ player, position }: PlayerProps) => {
   return (
-    <div className="flex gap-2 m-2 w-9 h-12 border-[#21617F] rounded-sm">
-      {player.map((cardIndex, index) => (
-        <CardSlot
-          key={index}
-          position={position}
-          slotIndex={index}
-          cardIndex={cardIndex}
-        />
-      ))}
+    <div className="flex-col">
+      <div className="flex flex-row m-2">
+        {player.map((cardIndex, index) => (
+          <CardSlot
+            key={index}
+            position={position}
+            slotIndex={index}
+            cardIndex={cardIndex}
+          />
+        ))}
+      </div>
+      <Typography fontColor="player" fontSize="default">
+        {C.PLAYER_NAME[position]}
+      </Typography>
     </div>
   );
 };

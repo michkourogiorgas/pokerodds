@@ -27,7 +27,9 @@ const CardSlot = ({ position, slotIndex, cardIndex }) => {
     Slot = <EmptyCardSlot position={position} slotIndex={slotIndex} />;
   }
 
-  return <div className="w-9 h-12 border-[#21617F] rounded-sm">{Slot}</div>;
+  return (
+    <div className="w-9.75 h-13 m-0.5 border-[#21617F] rounded-sm">{Slot}</div>
+  );
 };
 
 export default CardSlot;

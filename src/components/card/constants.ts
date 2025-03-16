@@ -7,13 +7,6 @@ const TEXT_COLOR: SuitToColor = {
   diamonds: "text-[#009ef6]",
 };
 
-const BORDER_COLOR: SuitToColor = {
-  hearts: "border-red-600",
-  spades: "border-white",
-  clubs: "text-green-500",
-  diamonds: "border-[#009ef6]",
-};
-
 const BG_COLOR: SuitToColor = {
   hearts: "bg-[#731C16]",
   spades: "bg-[#393939]",
@@ -35,7 +28,6 @@ const OPACITY: string = "opacity-30";
 export default {
   BG_COLOR,
   TEXT_COLOR,
-  BORDER_COLOR,
   SUIT_SYMBOL,
   NO_OPACITY,
   OPACITY,

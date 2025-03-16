@@ -1,17 +1,22 @@
 import { useState, DragEvent } from "react";
-import { useDispatch } from "react-redux";
-import { deckActions, tableActions } from "../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { deckActions, updateTableAsync, validateAsync } from "../../../store";
 import cardSlot from "../../../../public/img/cardSlot.png";
 
 const EmptyCardSlot = ({ position, slotIndex }) => {
+  const validation = useSelector((state) => state.validation);
+  const table = useSelector((state) => state.table);
+  const isValid = validation[position][slotIndex];
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleDrop = (event: DragEvent) => {
+  const handleDrop = async (event: DragEvent) => {
     event.preventDefault();
     const cardIndex = +event.dataTransfer.getData("text/plain");
     dispatch(deckActions.updateDeck({ cardIndex, isSelected: true }));
-    dispatch(tableActions.updateTable({ position, slotIndex, cardIndex }));
+    dispatch(updateTableAsync({ position, slotIndex, cardIndex })).then(() => {
+      dispatch(validateAsync());
+    });
   };
 
   const handleLeave = (event: DragEvent) => {
@@ -24,7 +29,11 @@ const EmptyCardSlot = ({ position, slotIndex }) => {
     setIsHovered(true);
   };
 
-  const border = isHovered && "border-2 border-red-600";
+  const border = !isValid
+    ? "border-2 border-red-600"
+    : isHovered
+    ? "border-2 border-green-600"
+    : "";
 
   return (
     <div onDrop={handleDrop} onDragLeave={handleLeave} onDragOver={handleOver}>

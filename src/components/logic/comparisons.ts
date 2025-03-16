@@ -50,21 +50,21 @@ const getStongerHandPerPlayer = (
   return stongerHandPerPlayer;
 };
 
-const comparePlayers = (community: Hand[], players: Player[]) => {
-  const bestHandPerPlayer = getStongerHandPerPlayer(community, players);
+const comparePlayers = (bestHandPerPlayer: HandAssesment[]) => {
   const winners = bestHandPerPlayer.reduce((max: number[], current, index) => {
-    const maxHand = bestHandPerPlayer[max[0]] || bestHandPerPlayer[0];
-    const areEqual = isHandEqual(maxHand, current);
+    const maxHand = max[0] || bestHandPerPlayer[0];
+    const areEqual = isHandEqual(current, maxHand);
     if (areEqual) {
       max.push(index);
     }
-    const isStronger = isHandStronger(maxHand, current);
+    const isStronger = isHandStronger(current, maxHand);
     if (isStronger) {
       max = [index];
     }
     return max;
   }, []);
+
   return winners;
 };
 
-export { comparePlayers };
+export { comparePlayers, getStongerHandPerPlayer };
