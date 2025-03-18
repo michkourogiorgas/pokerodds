@@ -1,70 +1,36 @@
-import { Card, Hand, HandAssesment, Player } from "../../types";
+import { getHandStrength } from "./hand";
 import U from "./utils";
-import { getStrength } from "./hand";
+import { Hand, HandAssesment, Players } from "../../types";
 
-const initialValue = { name: "", value: 0, kickers: 0 };
+const getHandsStrength = (
+  combinations: Hand[],
+  player: string
+): HandAssesment[] =>
+  combinations.map((combination) => ({
+    ...getHandStrength(combination),
+    player,
+  }));
 
-const isValueGreater = (current: HandAssesment, best: HandAssesment): boolean =>
-  current.value > best.value;
-
-const isValueEqual = (current: HandAssesment, best: HandAssesment): boolean =>
-  current.value === best.value;
-
-const isKickerGreater = (
-  current: HandAssesment,
-  best: HandAssesment
-): boolean => current.kickers > best.kickers;
-
-const isKickerEqual = (current: HandAssesment, best: HandAssesment): boolean =>
-  current.kickers === best.kickers;
-
-const isHandStronger = (
-  current: HandAssesment,
-  best: HandAssesment
-): boolean => {
-  return (
-    isValueGreater(current, best) ||
-    (isValueEqual(current, best) && isKickerGreater(current, best))
+const getBestHand = (hands: HandAssesment[]): HandAssesment[] => {
+  hands.sort((a, b) => b.value - a.value || b.kickers - a.kickers);
+  return hands.filter(
+    (hand) => hand.value === hands[0].value && hand.kickers === hands[0].kickers
   );
 };
 
-const isHandEqual = (current: HandAssesment, best: HandAssesment): boolean =>
-  isValueEqual(current, best) && isKickerEqual(current, best);
-
-const bestHand = (hands: Hand[]): HandAssesment =>
-  hands.reduce((max, currentHand) => {
-    const current = getStrength(currentHand);
-    return isHandStronger(current, max) ? current : max;
-  }, initialValue);
-
-const getStongerHandPerPlayer = (
-  community: Card[],
-  players: Player[]
+const getBestHandPerPlayer = (
+  community: Hand,
+  players: Players
 ): HandAssesment[] => {
-  const stongerHandPerPlayer: HandAssesment[] = [];
-  players.forEach((player) => {
+  const bestHands: HandAssesment[] = [];
+  Object.keys(players).map((key) => {
+    const player = players[key];
     const combinations = U.getCombinations([...community, ...player], 5);
-    const stongerHand = bestHand(combinations);
-    stongerHandPerPlayer.push(stongerHand);
+    const handsStrength = getHandsStrength(combinations, key);
+    const bestHand = getBestHand(handsStrength)[0];
+    bestHands.push(bestHand);
   });
-  return stongerHandPerPlayer;
+  return bestHands;
 };
 
-const comparePlayers = (bestHandPerPlayer: HandAssesment[]) => {
-  const winners = bestHandPerPlayer.reduce((max: number[], current, index) => {
-    const maxHand = max[0] || bestHandPerPlayer[0];
-    const areEqual = isHandEqual(current, maxHand);
-    if (areEqual) {
-      max.push(index);
-    }
-    const isStronger = isHandStronger(current, maxHand);
-    if (isStronger) {
-      max = [index];
-    }
-    return max;
-  }, []);
-
-  return winners;
-};
-
-export { comparePlayers, getStongerHandPerPlayer };
+export { getBestHand, getBestHandPerPlayer };

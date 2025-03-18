@@ -6,12 +6,12 @@ const Player = ({ player, position }: PlayerProps) => {
   return (
     <div className="flex-col">
       <div className="flex flex-row m-2">
-        {player.map((cardIndex, index) => (
+        {player.map((card, index) => (
           <CardSlot
             key={index}
             position={position}
             slotIndex={index}
-            cardIndex={cardIndex}
+            cardIndex={card.index}
           />
         ))}
       </div>

@@ -1,5 +1,5 @@
-import C from "./constants";
 import { Card, Hand, FrequencyCounter } from "../../types";
+import C from "./constants";
 
 const calculateKickersValue = (...kickers: string[]): number =>
   kickers.reduce(
@@ -11,20 +11,16 @@ const calculateKickersValue = (...kickers: string[]): number =>
     0
   );
 
-const sortKickers = (values: string[]) => {
-  values.sort((a, b) => {
-    return C.CARD_STRENGTH[b] - C.CARD_STRENGTH[a];
-  });
-  return values;
-};
+const sortKickers = (values: string[]) =>
+  values.sort((a, b) => C.CARD_STRENGTH[b] - C.CARD_STRENGTH[a]);
 
 const getCardByFrequency = (
   cardsFrequency: FrequencyCounter,
   frequency: number
 ) =>
-  Object.keys(cardsFrequency).filter((key) => {
-    if (cardsFrequency[key] === frequency) return key;
-  });
+  Object.keys(cardsFrequency).filter(
+    (key) => cardsFrequency[key] === frequency
+  );
 
 const straightFlush = (hand: Hand): number =>
   C.CARD_STRENGTH[hand[hand.length - 1].value];

@@ -29,7 +29,7 @@ const removeCard = (slots, { cardIndex }) => {
   let foundPosition;
   const a = Object.keys(slots).map((slot) => {
     slots[slot].map((value, index) => {
-      if (value === cardIndex) {
+      if (value.index === cardIndex) {
         foundIndex = index;
         foundPosition = slot;
       }

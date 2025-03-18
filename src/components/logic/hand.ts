@@ -107,10 +107,10 @@ const calculateHandStrength = (
   return { name, value, kickers };
 };
 
-const getStrength = (hand: Hand) => {
+const getHandStrength = (hand: Hand) => {
   const sortedHand = sortCards(hand);
   const { cardsFrequency, suitsFrequency } = prepareHand(sortedHand);
   return calculateHandStrength(sortedHand, cardsFrequency, suitsFrequency);
 };
 
-export { getStrength };
+export { getHandStrength };

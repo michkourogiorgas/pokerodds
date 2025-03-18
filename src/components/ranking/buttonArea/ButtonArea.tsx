@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { getResult, mike } from "../../logic/results";
+import { runPokerOdds } from "../../logic/runCalculator";
 import {
   deckActions,
   tableActions,
@@ -24,32 +24,11 @@ const ButtonArea = () => {
     dispatch(resultsActions.reset());
   };
 
-  const handleRun = async (): void => {
-    // console.log(validation);
-    // // const isBelowThreshold = (currentValue) => currentValue < 40;
-
-    // // const array1 = [1, 30, 39, 29, 10, 13];
-    // // console.log(Object.keys(table).every(table[key]));
-    // let mike = true;
-    // Object.keys(validation).map((item) => {
-    //   const isValid = validation[item].every((item) => item);
-    //   mike = isValid && mike;
-    // });
-    // console.log(mike);
-    // if (!mike) return;
-    // setIsModalOpen(true);
-    // mike([1, 2, 3, 4, 5]);
-    // const result = getResult(deck, table).then((result) => {
-    //   return result;
-    // });
-    // console.log(result);
-    const result = getResult(deck, table);
-    console.log(result);
-    result.then((value) => {
-      resolve("Success!");
-      console.log(value); // 1
+  const handleRun = async () => {
+    runPokerOdds(deck, table).then((results) => {
+      const { winners, ties, ranking } = results;
+      dispatch(resultsActions.updateResults({ winners, ties, ranking }));
     });
-    // dispatch(resultsActions.updateResults({ winners, ties, ranking }));
   };
 
   return (

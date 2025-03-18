@@ -1,167 +1,81 @@
+import { getBestHand, getBestHandPerPlayer } from "./comparisons";
+import U from "./utils";
 import {
-  Card,
-  Combination,
   FrequencyCounter,
   Hand,
-  Player,
-  UICard,
+  HandAssesment,
+  Players,
+  PokerDataHand,
+  TotalPokerData,
 } from "../../types";
-import U from "./utils";
-import { comparePlayers, getStongerHandPerPlayer } from "./comparisons";
-import { getCommunityCombinations } from "./community";
-// import workerScript from "./Worker";
-import MyWorker from "./worker?worker";
 
-// const getCommunityCombinations = (
-//   community: Card[],
-//   remainingDeckCombinations: Combination[]
-// ): Hand[] => {
-//   if (!remainingDeckCombinations.length) {
-//     return [community];
-//   }
-//   const communityCombinations = [];
-//   for (const deckCombination of remainingDeckCombinations) {
-//     communityCombinations.push(
-//       ...U.getCombinations([...community, ...deckCombination], 5)
-//     );
-//   }
-//   return communityCombinations;
-// };
+const updateHeroRankings = (
+  bestHands: HandAssesment[],
+  ranking: FrequencyCounter
+): void => {
+  for (const hand of bestHands) {
+    if (hand.player === "hero") {
+      ranking[hand.name] = (ranking[hand.name] ?? 0) + 1;
+    }
+  }
+};
 
-// const countFrequency = (counterObj, counted) => {
-//   return {counterObj[counted]: counterObj[counted] + 1 || 1};
-// };
-
-export const getWinners = (
+const getResults = (
   communityCombinations: Hand[],
-  players: Player[]
-) => {
-  const winners: FrequencyCounter = {};
-  const ties: FrequencyCounter = {};
-  const ranking: FrequencyCounter = {};
+  players: Players
+): PokerDataHand => {
+  const winners = {};
+  const ties = {};
+  const ranking = {};
   communityCombinations.forEach((community) => {
-    const bestHandPerPlayer = getStongerHandPerPlayer(community, players);
-    const winner = comparePlayers(bestHandPerPlayer);
+    const bestHandPerPlayer = getBestHandPerPlayer(community, players);
+    updateHeroRankings(bestHandPerPlayer, ranking);
+    const winner = getBestHand(bestHandPerPlayer);
 
     if (winner.length === 1) {
-      winners[winner[0]] = winners[winner[0]] + 1 || 1;
-      // winners = countFrequency(winners, winner[0]);
+      U.updateFrequencyCounter(winners, winner[0].player, 1);
     } else {
-      for (const tie of winner) {
-        // ties = countFrequency(ties, tie);
-        ties[tie] = ties[tie] + 1 || 1;
+      for (const player of winner) {
+        U.updateFrequencyCounter(ties, player.player, 1);
       }
     }
-    // ranking = countFrequency(ranking, bestHandPerPlayer[0].name);
-    ranking[bestHandPerPlayer[0].name] =
-      ranking[bestHandPerPlayer[0].name] + 1 || 1;
   });
   return { winners, ties, ranking };
 };
 
-const mike = (community) =>
-  new Promise((resolve) => {
-    const start = performance.now();
-
-    const myWorker = new Worker(new URL("./worker.js", import.meta.url), {
-      type: "module",
-    });
-    myWorker.onmessage = (e) => {
-      const end = performance.now();
-      console.log(`Calculate communit ${end - start} milliseconds`);
-      resolve(e.data);
-    };
-    myWorker.postMessage(community);
-  });
-
-const aggregateData = (data) => {
-  console.log(data);
+const mergeResults = (data: PokerDataHand[]): TotalPokerData => {
   return data.reduce(
-    (accumulator, currentValue) => {
-      Object.keys(currentValue.winners).forEach((key) => {
-        if (key === "0") {
-          accumulator.heroWins =
-            (accumulator.heroWins || 0) + currentValue.winners[key];
+    (accumulator, current) => {
+      Object.entries(current.winners).forEach(([key, value]) => {
+        if (key === "hero") {
+          accumulator.hero["wins"] = (accumulator.hero["wins"] || 0) + value;
         } else {
-          accumulator.villainWins =
-            (accumulator.villainWins || 0) + currentValue.winners[key];
+          accumulator.villain["wins"] =
+            (accumulator.villain["wins"] || 0) + value;
         }
       });
 
-      Object.keys(currentValue.ties).forEach((key) => {
-        if (key === "0") {
-          accumulator.heroTies =
-            (accumulator.heroTies || 0) + currentValue.ties[key];
+      Object.entries(current.ties).forEach(([key, value]) => {
+        if (key === "hero") {
+          accumulator.hero["ties"] = (accumulator.hero["ties"] || 0) + value;
         } else {
-          accumulator.villainTies =
-            (accumulator.villainTies || 0) + currentValue.ties[key];
+          accumulator.villain["ties"] =
+            (accumulator.villain["ties"] || 0) + value;
         }
       });
 
-      Object.keys(currentValue.ranking).forEach((rank) => {
-        accumulator.ranking[rank] =
-          (accumulator.ranking[rank] || 0) + currentValue.ranking[rank];
+      Object.entries(current.ranking).forEach(([key, value]) => {
+        accumulator.ranking[key] = (accumulator.ranking[key] || 0) + value;
       });
 
       return accumulator;
     },
     {
-      heroWins: 0,
-      villainWins: 0,
-      heroTies: 0,
-      villainTies: 0,
+      hero: {},
+      villain: {},
       ranking: {},
-    }
+    } as TotalPokerData
   );
 };
 
-const getResult = async (deck: UICard[], table) => {
-  const community = U.getCardsFromIndices(deck, table.community);
-  const heroCards = U.getCardsFromIndices(deck, table.hero);
-  const villain1Cards = U.getCardsFromIndices(deck, table.villain_1);
-  const villain2Cards = U.getCardsFromIndices(deck, table.villain_2);
-  const villain3Cards = U.getCardsFromIndices(deck, table.villain_3);
-  const villain4Cards = U.getCardsFromIndices(deck, table.villain_4);
-  const villain5Cards = U.getCardsFromIndices(deck, table.villain_5);
-  const villains = [];
-
-  ////////////////////////////
-  villain1Cards.length && villains.push(villain1Cards);
-  villain2Cards.length && villains.push(villain2Cards);
-  villain3Cards.length && villains.push(villain3Cards);
-  villain4Cards.length && villains.push(villain4Cards);
-  villain5Cards.length && villains.push(villain5Cards);
-  console.log(villains);
-
-  ///////////////////////////////
-
-  const communities = getCommunityCombinations(deck, community);
-
-  const splitCommunities = U.splitArrayToChunks(
-    communities,
-    communities.length / 4
-  );
-
-  await Promise.all([
-    mike({ communities: splitCommunities[0], heroCards, villains }),
-    mike({ communities: splitCommunities[1], heroCards, villains }),
-    mike({ communities: splitCommunities[2], heroCards, villains }),
-    mike({ communities: splitCommunities[3], heroCards, villains }),
-  ]).then((values) => {
-    const { heroWins, villainWins, heroTies, villainTies, ranking } =
-      aggregateData(values);
-    const total = communities.length;
-    const heroWinsPercentage = U.getPercentage(heroWins, total);
-    const villainsWinPercentage = U.getPercentage(villainWins, total);
-    const heroTiesPercentage = U.getPercentage(heroTies, total);
-    const villainsTiesPercentage = U.getPercentage(villainTies, total);
-
-    return {
-      winners: [heroWinsPercentage, villainsWinPercentage],
-      ties: [heroTiesPercentage, villainsTiesPercentage],
-      ranking: ranking,
-    };
-  });
-};
-
-export { getResult };
+export { getResults, mergeResults };

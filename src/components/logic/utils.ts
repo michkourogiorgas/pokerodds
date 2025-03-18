@@ -1,12 +1,19 @@
-import { Card, Combination, Hand } from "../../types";
+import {
+  Card,
+  FrequencyCounter,
+  Hand,
+  Table,
+  Players,
+  PokerDataHand,
+} from "../../types";
 
 const getCombinations = (
   cards: Card[],
   combinationLength: number,
-  combinations: Combination[] = [],
+  combinations: Hand[] = [],
   inProgressCombination: Card[] = [],
   index: number = 0
-): Combination[] => {
+) => {
   if (!combinationLength) {
     return [];
   }
@@ -26,8 +33,21 @@ const getCombinations = (
       );
     }
   }
-
   return combinations;
+};
+
+const getCommunityCombinations = (deck: Card[], community: Card[]): Hand[] => {
+  if (community.length === 5) {
+    return [community];
+  }
+
+  const remainingDeck = deck.filter((card) => !card.isSelected);
+  const combinations = getCombinations(remainingDeck, 5 - community.length);
+  const communities = [];
+  for (const combination of combinations) {
+    communities.push(...getCombinations([...community, ...combination], 5));
+  }
+  return communities;
 };
 
 const getPercentage = (value: number, totalValue: number): string => {
@@ -35,28 +55,61 @@ const getPercentage = (value: number, totalValue: number): string => {
   return ((value / totalValue) * 100).toFixed(2) + "%";
 };
 
-const getCardsFromIndices = (deck, cardIndices) =>
-  cardIndices.flatMap((cardIndex) => {
-    if (cardIndex === -1) {
-      return [];
-    }
-    return deck[cardIndex];
+const getRankingPercentage = (ranking: FrequencyCounter, total: number) => {
+  const rankingPercentage: Record<string, string> = {};
+  Object.keys(ranking).forEach((key) => {
+    rankingPercentage[key] = getPercentage(ranking[key], total);
   });
+  return rankingPercentage;
+};
 
-const splitArrayToChunks = (hands: Hand[], size: number) => {
-  if (!hands.length) {
-    return [];
-  }
-  const chunksNumber = Math.ceil(hands.length / size);
+const splitArrayToChunks = (communities: Hand[], size: number) => {
+  const chunksNumber = Math.ceil(communities.length / size);
   const chunksArray = Array(chunksNumber);
   return [...chunksArray].map((_, index) => {
-    return hands.slice(index * size, (index + 1) * size);
+    return communities.slice(index * size, (index + 1) * size);
   });
 };
 
+const updateFrequencyCounter = (
+  object: FrequencyCounter,
+  key: string,
+  value: number
+): void => {
+  object[key] = (object[key] ?? 0) + value;
+};
+
+const filterPlayers = (table: Table): Players => {
+  const players: Players = {};
+  Object.keys(table).forEach((key) => {
+    if (table[key].length === 2 && table[key][0].index) {
+      players[key] = table[key];
+    }
+  });
+  return players;
+};
+
+const runWorker = (
+  communities: Hand[],
+  players: Players
+): Promise<PokerDataHand> =>
+  new Promise((resolve) => {
+    const myWorker = new Worker(new URL("./worker.js", import.meta.url), {
+      type: "module",
+    });
+    myWorker.onmessage = (event) => {
+      resolve(event.data);
+    };
+    myWorker.postMessage({ communities, players });
+  });
+
 export default {
-  splitArrayToChunks,
   getCombinations,
+  getCommunityCombinations,
   getPercentage,
-  getCardsFromIndices,
+  getRankingPercentage,
+  filterPlayers,
+  splitArrayToChunks,
+  runWorker,
+  updateFrequencyCounter,
 };

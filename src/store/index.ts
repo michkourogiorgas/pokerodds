@@ -48,8 +48,8 @@ const tableSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(updateTableAsync.fulfilled, (state, action) => {
-      const { position, slotIndex, cardIndex } = action.meta.arg;
-      state[position][slotIndex] = cardIndex;
+      const { position, slotIndex, card } = action.meta.arg;
+      state[position][slotIndex] = card;
     });
     builder.addCase(removeCardAsync.fulfilled, (state, action) => {
       U.removeCard(state, action.meta.arg);

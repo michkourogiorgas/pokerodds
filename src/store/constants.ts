@@ -5,21 +5,21 @@ const values: string[] = ["A", "K", "Q", "J", "10", "9", "8", "7", "6"];
 const cardSlot: number[] = [0, 0];
 
 const table = {
-  villain_1: [-1, -1],
-  villain_2: [-1, -1],
-  villain_3: [-1, -1],
-  villain_4: [-1, -1],
-  villain_5: [-1, -1],
+  villain1: [-1, -1],
+  villain2: [-1, -1],
+  villain3: [-1, -1],
+  villain4: [-1, -1],
+  villain5: [-1, -1],
   hero: [-1, -1],
   community: [-1, -1, -1, -1, -1],
 };
 
 const VALIDATION = {
-  villain_1: [true, true],
-  villain_2: [true, true],
-  villain_3: [true, true],
-  villain_4: [true, true],
-  villain_5: [true, true],
+  villain1: [true, true],
+  villain2: [true, true],
+  villain3: [true, true],
+  villain4: [true, true],
+  villain5: [true, true],
   hero: [false, false],
   community: [true, true, true, true, true],
 };

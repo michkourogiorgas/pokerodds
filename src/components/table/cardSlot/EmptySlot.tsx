@@ -5,6 +5,7 @@ import cardSlot from "../../../../public/img/cardSlot.png";
 
 const EmptyCardSlot = ({ position, slotIndex }) => {
   const validation = useSelector((state) => state.validation);
+  const deck = useSelector((state) => state.deck);
   const table = useSelector((state) => state.table);
   const isValid = validation[position][slotIndex];
   const dispatch = useDispatch();
@@ -14,7 +15,9 @@ const EmptyCardSlot = ({ position, slotIndex }) => {
     event.preventDefault();
     const cardIndex = +event.dataTransfer.getData("text/plain");
     dispatch(deckActions.updateDeck({ cardIndex, isSelected: true }));
-    dispatch(updateTableAsync({ position, slotIndex, cardIndex })).then(() => {
+    dispatch(
+      updateTableAsync({ position, slotIndex, card: deck[cardIndex] })
+    ).then(() => {
       dispatch(validateAsync());
     });
   };

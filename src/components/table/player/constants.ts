@@ -1,11 +1,11 @@
 type POSITION_TO_NAME = Record<string, string>;
 
 const PLAYER_NAME: POSITION_TO_NAME = {
-  villain_1: "Villain",
-  villain_2: "Villain",
-  villain_3: "Villain",
-  villain_4: "Villain",
-  villain_5: "Villain",
+  villain1: "Villain",
+  villain2: "Villain",
+  villain3: "Villain",
+  villain4: "Villain",
+  villain5: "Villain",
   hero: "Hero",
 };
 
