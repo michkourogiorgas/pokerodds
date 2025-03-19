@@ -4,14 +4,14 @@ import { Card, PokerDataHand, Results, Table } from "../../types";
 
 const runPokerOdds = async (deck: Card[], table: Table): Promise<Results> =>
   new Promise((resolve) => {
-    const community = table.community.filter((card) => card.index);
+    const start = new Date();
+    const community = table.community.filter((card) => card.index !== -1);
     const communities = U.getCommunityCombinations(deck, community);
     const players = U.filterPlayers(table);
     const [split1, split2, split3, split4] = U.splitArrayToChunks(
       communities,
       communities.length / 4
     );
-
     Promise.all([
       U.runWorker(split1, players),
       U.runWorker(split2, players),
@@ -30,6 +30,8 @@ const runPokerOdds = async (deck: Card[], table: Table): Promise<Results> =>
         ties: [heroTiesPercentage, villainsTiesPercentage],
         ranking: rankingPercentage,
       };
+      const end = new Date();
+      console.log(end - start);
       resolve(results);
     });
   });

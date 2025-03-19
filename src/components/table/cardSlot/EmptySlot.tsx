@@ -1,15 +1,22 @@
 import { useState, DragEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { deckActions, updateTableAsync, validateAsync } from "../../../store";
+import { usePokerDispatch, usePokerSelector } from "../../../store/hooks";
+import {
+  deckActions,
+  updateTableAsync,
+  validateAsync,
+} from "../../../store/store";
 import cardSlot from "../../../../public/img/cardSlot.png";
 
-const EmptyCardSlot = ({ position, slotIndex }) => {
-  const validation = useSelector((state) => state.validation);
-  const deck = useSelector((state) => state.deck);
-  const table = useSelector((state) => state.table);
-  const isValid = validation[position][slotIndex];
-  const dispatch = useDispatch();
+type EmptyCardSlotProps = {
+  position: string;
+  slotIndex: number;
+};
+
+const EmptyCardSlot = ({ position, slotIndex }: EmptyCardSlotProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const validation = usePokerSelector((state) => state.validation);
+  const deck = usePokerSelector((state) => state.deck);
+  const dispatch = usePokerDispatch();
 
   const handleDrop = async (event: DragEvent) => {
     event.preventDefault();
@@ -31,6 +38,8 @@ const EmptyCardSlot = ({ position, slotIndex }) => {
     event.preventDefault();
     setIsHovered(true);
   };
+
+  const isValid = validation[position][slotIndex];
 
   const border = !isValid
     ? "border-2 border-red-600"

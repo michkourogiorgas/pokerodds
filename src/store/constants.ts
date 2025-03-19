@@ -4,14 +4,21 @@ const values: string[] = ["A", "K", "Q", "J", "10", "9", "8", "7", "6"];
 
 const cardSlot: number[] = [0, 0];
 
+const EMPTY_CARD = {
+  suit: "",
+  value: "",
+  index: -1,
+  isSelected: false,
+};
+
 const table = {
-  villain1: [-1, -1],
-  villain2: [-1, -1],
-  villain3: [-1, -1],
-  villain4: [-1, -1],
-  villain5: [-1, -1],
-  hero: [-1, -1],
-  community: [-1, -1, -1, -1, -1],
+  villain1: [EMPTY_CARD, EMPTY_CARD],
+  villain2: [EMPTY_CARD, EMPTY_CARD],
+  villain3: [EMPTY_CARD, EMPTY_CARD],
+  villain4: [EMPTY_CARD, EMPTY_CARD],
+  villain5: [EMPTY_CARD, EMPTY_CARD],
+  hero: [EMPTY_CARD, EMPTY_CARD],
+  community: [EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD, EMPTY_CARD],
 };
 
 const VALIDATION = {
@@ -25,7 +32,7 @@ const VALIDATION = {
 };
 
 const INITIAL_RESULT_STATE = {
-  ranking: [],
+  ranking: {},
   winners: ["0%", "0%"],
   ties: ["0%", "0%"],
 };
@@ -35,6 +42,7 @@ export default {
   suits,
   values,
   table,
+  EMPTY_CARD,
   VALIDATION,
   INITIAL_RESULT_STATE,
 };

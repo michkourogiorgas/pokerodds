@@ -4,7 +4,7 @@ const EQUITY_TABLE = [
   ["0%", "Tie", "0%"],
 ];
 
-const RANKING_TABLE = {
+const RANKING_TABLE: Record<string, string> = {
   Rank: "Hero",
   "Flush Royal": "0%",
   "Straight Flush": "0%",

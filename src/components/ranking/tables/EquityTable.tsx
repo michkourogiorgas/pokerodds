@@ -1,10 +1,9 @@
-import { useSelector } from "react-redux";
+import { usePokerSelector } from "../../../store/hooks";
 import Row from "./Row";
-import C from "./constants";
 import U from "./utils";
 
 const EquityTable = () => {
-  const results = useSelector((state) => state.results);
+  const results = usePokerSelector((state) => state.results);
   const equityTable = U.updateEquityTable(results);
 
   return (

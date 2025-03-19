@@ -1,6 +1,7 @@
 import C from "./constants";
+import { Results } from "../../../types";
 
-const updateEquityTable = ({ winners, ties }) => {
+const updateEquityTable = ({ winners, ties }: Results) => {
   const equityTable = [...C.EQUITY_TABLE];
   if (!winners.length) {
     return C.EQUITY_TABLE;
@@ -12,7 +13,11 @@ const updateEquityTable = ({ winners, ties }) => {
   return equityTable;
 };
 
-const updateRankingTable = ({ ranking }) => {
+const updateRankingTable = ({
+  ranking,
+}: {
+  ranking: Record<string, string>;
+}) => {
   const rankingTable = { ...C.RANKING_TABLE };
   if (!Object.keys(ranking).length) {
     return rankingTable;

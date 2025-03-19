@@ -1,6 +1,12 @@
 import Typography from "../../typography";
 import CardSlot from "../cardSlot";
 import C from "./constants";
+import { Player as PlayerUIProps } from "../../../types";
+
+type PlayerProps = {
+  player: PlayerUIProps;
+  position: string;
+};
 
 const Player = ({ player, position }: PlayerProps) => {
   return (

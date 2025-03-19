@@ -1,15 +1,15 @@
-import { useSelector } from "react-redux";
+import { usePokerSelector } from "../../../store/hooks";
 import EmptyCardSlot from "./EmptySlot";
 import Card from "../../card/Card";
 
-type cardSlotProps = {
+type CardSlotProps = {
   position: string;
   slotIndex: number;
   cardIndex: number;
 };
 
-const CardSlot = ({ position, slotIndex, cardIndex }) => {
-  const deck = useSelector((state) => state.deck);
+const CardSlot = ({ position, slotIndex, cardIndex }: CardSlotProps) => {
+  const deck = usePokerSelector((state) => state.deck);
   const card = deck[cardIndex];
   let Slot;
 

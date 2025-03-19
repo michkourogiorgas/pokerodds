@@ -82,7 +82,7 @@ const updateFrequencyCounter = (
 const filterPlayers = (table: Table): Players => {
   const players: Players = {};
   Object.keys(table).forEach((key) => {
-    if (table[key].length === 2 && table[key][0].index) {
+    if (table[key].length === 2 && table[key][0].index !== -1) {
       players[key] = table[key];
     }
   });

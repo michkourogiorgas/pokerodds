@@ -1,18 +1,11 @@
 import { DragEvent } from "react";
-import { useDispatch } from "react-redux";
-import {
-  deckActions,
-  // tableActions,
-  removeCardAsync,
-  validateAsync,
-} from "../../store";
+import { usePokerDispatch } from "../../store/hooks";
+import { deckActions, removeCardAsync, validateAsync } from "../../store/store";
+import { Card as TypeCard } from "../../types";
 import C from "./constants";
 
-type CardProps = {
-  suit: string;
-  value: string;
-  index: number;
-  isSelected: boolean;
+type CardProps = TypeCard & {
+  isHoverable: boolean;
 };
 
 const Card = ({
@@ -21,13 +14,13 @@ const Card = ({
   index,
   isSelected,
   isHoverable = false,
-}: propsType) => {
-  const dispatch = useDispatch();
+}: CardProps) => {
+  const dispatch = usePokerDispatch();
   const opacity = isSelected ? C.OPACITY : C.NO_OPACITY;
   const isVisible = isHoverable && "group-hover:flex group-hover:flex-col";
 
   const handleDragStart = (event: DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData("text/plain", index);
+    event.dataTransfer.setData("text/plain", index.toString());
   };
 
   const handleClick = () => {
@@ -40,7 +33,7 @@ const Card = ({
   return (
     <>
       <div
-        id={index}
+        id={index.toString()}
         draggable={!isSelected && !isHoverable}
         onDragStart={handleDragStart}
         className={`group relative w-9.75 h-13 flex flex-col px-0.5 

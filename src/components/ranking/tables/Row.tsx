@@ -1,6 +1,13 @@
 import Typography from "../../typography";
 
-const Row = ({ hand, hero, villains, fontSize }) => {
+type RowProps = {
+  hand: string;
+  hero: string;
+  villains: string;
+  fontSize: string;
+};
+
+const Row = ({ hand, hero, villains, fontSize }: RowProps) => {
   return (
     <>
       <Typography fontColor="default" fontSize={fontSize}>

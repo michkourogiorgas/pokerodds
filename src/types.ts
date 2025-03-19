@@ -1,7 +1,7 @@
 type Card = {
   suit: string;
   value: string;
-  index: string;
+  index: number;
   isSelected: boolean;
 };
 
@@ -42,21 +42,12 @@ type Results = {
 
 // UI types
 
-type UICard = Card & { index: number; isSelected: boolean };
+type ValidCards = boolean[];
 
-type UIPlayer = [UICard, UICard];
-
-type CardSlot = {
-  playerId: number;
-  slotId: number;
-  cardId: string;
-};
+type ValidationTable = Record<string, ValidCards>;
 
 export {
   Card,
-  CardSlot,
-  UICard,
-  UIPlayer,
   Hand,
   HandAssesment,
   FrequencyCounter,
@@ -66,4 +57,6 @@ export {
   Results,
   Table,
   TotalPokerData,
+  ValidationTable,
+  ValidCards,
 };
