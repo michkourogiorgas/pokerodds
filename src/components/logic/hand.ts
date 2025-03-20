@@ -73,35 +73,39 @@ const calculateHandStrength = (
     isThreeOfAKind,
     isTwoPair,
   } = assessHand(hand, cardsFrequency, suitsFrequency);
-  if (areCardsDifferent && isFlush && isStraight && hasAce) {
-    name = "Flush Royal";
-  } else if (areCardsDifferent && isFlush && isStraight) {
-    name = "Straight Flush";
-    kickers = K.straightFlush(hand);
-  } else if (areCardsDifferent && isFlush) {
-    name = "Flush";
-    kickers = K.flush(hand);
-  } else if (areCardsDifferent && isStraight) {
-    name = "Straight";
-    kickers = K.straight(hand);
-  } else if (areCardsDifferent) {
-    name = "High Card";
-    kickers = K.highCard(cardsFrequency);
-  } else if (isQuads) {
-    name = "Quads";
-    kickers = K.quads(cardsFrequency);
-  } else if (isFullHouse) {
-    name = "Full House";
-    kickers = K.fullHouse(cardsFrequency);
-  } else if (isThreeOfAKind) {
-    name = "Three of a Kind";
-    kickers = K.threeOfAKind(cardsFrequency);
-  } else if (isTwoPair) {
-    name = "Two Pairs";
-    kickers = K.twoPairs(cardsFrequency);
+  if (areCardsDifferent) {
+    if (isFlush && isStraight && hasAce) {
+      name = "Flush Royal";
+    } else if (isFlush && isStraight) {
+      name = "Straight Flush";
+      kickers = K.straightFlush(hand);
+    } else if (isFlush) {
+      name = "Flush";
+      kickers = K.flush(hand);
+    } else if (isStraight) {
+      name = "Straight";
+      kickers = K.straight(hand);
+    } else {
+      name = "High Card";
+      kickers = K.highCard(cardsFrequency);
+    }
   } else {
-    name = "One Pair";
-    kickers = K.onePair(cardsFrequency);
+    if (isQuads) {
+      name = "Quads";
+      kickers = K.quads(cardsFrequency);
+    } else if (isFullHouse) {
+      name = "Full House";
+      kickers = K.fullHouse(cardsFrequency);
+    } else if (isThreeOfAKind) {
+      name = "Three of a Kind";
+      kickers = K.threeOfAKind(cardsFrequency);
+    } else if (isTwoPair) {
+      name = "Two Pairs";
+      kickers = K.twoPairs(cardsFrequency);
+    } else {
+      name = "One Pair";
+      kickers = K.onePair(cardsFrequency);
+    }
   }
   const value = C.HAND_STRENGTH[name];
   return { name, value, kickers };
