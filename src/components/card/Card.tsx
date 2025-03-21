@@ -1,12 +1,8 @@
-import { DragEvent } from "react";
+import { DragEvent, MouseEvent } from "react";
 import { usePokerDispatch } from "../../store/hooks";
 import { deckActions, removeCardAsync, validateAsync } from "../../store/store";
-import { Card as TypeCard } from "../../types";
+import { Card as CardProps } from "../../types";
 import C from "./constants";
-
-type CardProps = TypeCard & {
-  isHoverable: boolean;
-};
 
 const Card = ({
   suit,
@@ -23,7 +19,7 @@ const Card = ({
     event.dataTransfer.setData("text/plain", index.toString());
   };
 
-  const handleClick = () => {
+  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     dispatch(deckActions.updateDeck({ cardIndex: index, isSelected: false }));
     dispatch(removeCardAsync({ cardIndex: index })).then(() => {
       dispatch(validateAsync());

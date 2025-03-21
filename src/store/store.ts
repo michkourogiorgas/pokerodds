@@ -4,12 +4,12 @@ import {
   createAsyncThunk,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { Card, Table, ValidationTable, Results } from "../types";
+import { Card, Players, Results, ValidationTable } from "../types";
 import U from "./utils";
 import C from "./constants";
 
 const initialDeckState: Card[] = U.getDeck();
-const initialTableState: Table = C.table;
+const initialTableState: Players = C.table;
 const initialValidationState: ValidationTable = C.VALIDATION;
 const initialResultState: Results = C.INITIAL_RESULT_STATE;
 

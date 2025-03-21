@@ -3,13 +3,12 @@ type Card = {
   value: string;
   index: number;
   isSelected: boolean;
+  isHoverable?: boolean;
 };
 
 type Player = Card[];
 
 type Players = Record<string, Player>;
-
-type Table = Record<string, Player>;
 
 type Hand = Card[];
 
@@ -40,8 +39,6 @@ type Results = {
   ranking: Record<string, string>;
 };
 
-// UI types
-
 type ValidCards = boolean[];
 
 type ValidationTable = Record<string, ValidCards>;
@@ -55,7 +52,6 @@ export {
   Players,
   PokerDataHand,
   Results,
-  Table,
   TotalPokerData,
   ValidationTable,
   ValidCards,

@@ -5,7 +5,7 @@ import Ranking from "./components/ranking";
 
 const App = () => {
   return (
-    <div className="w-[80%] min-h-screen mx-auto flex">
+    <div className="max-w-4xl min-h-screen mx-auto flex">
       <div className="w-4/5 min-w-2xl h-full flex flex-col">
         <div className="h-1/2 m-4">
           <Table />

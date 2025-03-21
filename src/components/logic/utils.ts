@@ -2,7 +2,6 @@ import {
   Card,
   FrequencyCounter,
   Hand,
-  Table,
   Players,
   PokerDataHand,
 } from "../../types";
@@ -55,6 +54,14 @@ const getPercentage = (value: number, totalValue: number): string => {
   return ((value / totalValue) * 100).toFixed(2) + "%";
 };
 
+const getVillainsTiesPercentage = (
+  value: number,
+  totalValue: number,
+  villains: number
+): string => {
+  if (!value) return "0%";
+  return (((value / totalValue) * 100) / villains).toFixed(2) + "%";
+};
 const getRankingPercentage = (ranking: FrequencyCounter, total: number) => {
   const rankingPercentage: Record<string, string> = {};
   Object.keys(ranking).forEach((key) => {
@@ -79,7 +86,7 @@ const updateFrequencyCounter = (
   object[key] = (object[key] ?? 0) + value;
 };
 
-const filterPlayers = (table: Table): Players => {
+const filterPlayers = (table: Players): Players => {
   const players: Players = {};
   Object.keys(table).forEach((key) => {
     if (table[key].length === 2 && table[key][0].index !== -1) {
@@ -108,6 +115,7 @@ export default {
   getCommunityCombinations,
   getPercentage,
   getRankingPercentage,
+  getVillainsTiesPercentage,
   filterPlayers,
   splitArrayToChunks,
   runWorker,
