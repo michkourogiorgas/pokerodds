@@ -1,10 +1,9 @@
-import Typography from "../../typography";
 import CardSlot from "../cardSlot";
 import C from "./constants";
-import { Player as PlayerUIProps } from "../../../types";
+import { Hand } from "../../../types";
 
 type PlayerProps = {
-  player: PlayerUIProps;
+  player: Hand;
   position: string;
 };
 
@@ -21,9 +20,9 @@ const Player = ({ player, position }: PlayerProps) => {
           />
         ))}
       </div>
-      <Typography fontColor="player" fontSize="default">
+      <p className="text-ts text-white text-center font-sans font-medium ">
         {C.PLAYER_NAME[position]}
-      </Typography>
+      </p>
     </div>
   );
 };

@@ -1,17 +1,15 @@
 import C from "./constants";
 import K from "./kickers";
-import { Card, FrequencyCounter, Hand } from "../../types";
+import { Hand, FrequencyCounter } from "../../types";
 
-const sortCards = (hand: Hand): Hand => {
-  hand.sort((a: Card, b: Card) => {
+const sortCards = (hand: Hand): Hand =>
+  hand.sort((a, b) => {
     return C.CARD_STRENGTH[a.value] - C.CARD_STRENGTH[b.value];
   });
-  return hand;
-};
 
 const areConsecutive = (hand: Hand): boolean =>
   hand.every(
-    (card: Card, index: number) =>
+    (card, index) =>
       !index ||
       C.CARD_STRENGTH[card.value] - C.CARD_STRENGTH[hand[index - 1].value] === 1
   );
@@ -27,12 +25,12 @@ const prepareHand = (hand: Hand) => {
   return { cardsFrequency, suitsFrequency };
 };
 
-const assessHand = (
+const getHandSummary = (
   hand: Hand,
   cardsFrequency: FrequencyCounter,
   suitsFrequency: FrequencyCounter
 ) => {
-  const areCardsDifferent: boolean = Object.keys(cardsFrequency).length === 5;
+  const areCardsDifferent = Object.keys(cardsFrequency).length === 5;
   const isFlush = Object.values(suitsFrequency).length === 1;
   const isStraight = areConsecutive(hand);
   const hasAce = !!cardsFrequency["A"];
@@ -56,7 +54,7 @@ const assessHand = (
   };
 };
 
-const calculateHandStrength = (
+const evaluateHandStrength = (
   hand: Hand,
   cardsFrequency: FrequencyCounter,
   suitsFrequency: FrequencyCounter
@@ -72,7 +70,7 @@ const calculateHandStrength = (
     isFullHouse,
     isThreeOfAKind,
     isTwoPair,
-  } = assessHand(hand, cardsFrequency, suitsFrequency);
+  } = getHandSummary(hand, cardsFrequency, suitsFrequency);
   if (areCardsDifferent) {
     if (isFlush && isStraight && hasAce) {
       name = "Flush Royal";
@@ -111,10 +109,10 @@ const calculateHandStrength = (
   return { name, value, kickers };
 };
 
-const getHandStrength = (hand: Hand) => {
+const evaluateHand = (hand: Hand) => {
   const sortedHand = sortCards(hand);
   const { cardsFrequency, suitsFrequency } = prepareHand(sortedHand);
-  return calculateHandStrength(sortedHand, cardsFrequency, suitsFrequency);
+  return evaluateHandStrength(sortedHand, cardsFrequency, suitsFrequency);
 };
 
-export { getHandStrength };
+export { evaluateHand };

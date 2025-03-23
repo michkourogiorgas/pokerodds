@@ -1,11 +1,11 @@
-import { Card, Player, Table, ValidationTable } from "../types";
+import { Card, Hand, Players, ValidationTable } from "../types";
 import C from "./constants";
 
 const getDeck = (): Card[] => {
   const deck: Card[] = [];
-  C.values.forEach((value, valueIndex) => {
-    C.suits.forEach((suit, suitIndex) => {
-      const index = valueIndex * C.suits.length + suitIndex;
+  C.VALUES.forEach((value, valueIndex) => {
+    C.SUITS.forEach((suit, suitIndex) => {
+      const index = valueIndex * C.SUITS.length + suitIndex;
       const isSelected = false;
       deck.push({ suit, value, index, isSelected });
     });
@@ -27,7 +27,7 @@ const updateDeck = (
   return deck;
 };
 
-const removeCard = (state: Table, cardIndex: number) => {
+const removeCard = (state: Players, cardIndex: number) => {
   Object.keys(state).map((slot) => {
     state[slot].map((value, index) => {
       if (value.index === cardIndex) {
@@ -38,7 +38,7 @@ const removeCard = (state: Table, cardIndex: number) => {
   return state;
 };
 
-const validateHero = (hero: Player): boolean[] => [
+const validateHero = (hero: Hand): boolean[] => [
   hero[0].index !== -1,
   hero[1].index !== -1,
 ];
@@ -72,7 +72,7 @@ const validateCommunity = (community: Card[]) => {
   return Array(5).fill(true);
 };
 
-const validatePlayer = (player: Player) => {
+const validatePlayer = (player: Hand) => {
   const isPlayerCardSelected = player[0].index !== -1 || player[1].index !== -1;
   if (isPlayerCardSelected) {
     return [player[0].index !== -1, player[1].index !== -1];
@@ -80,7 +80,7 @@ const validatePlayer = (player: Player) => {
   return Array(2).fill(true);
 };
 
-const runValidation = (state: ValidationTable, table: Table) => {
+const runValidation = (state: ValidationTable, table: Players) => {
   Object.keys(table).map((key) => {
     if (key === "hero") {
       state[key] = validateHero(table[key]);

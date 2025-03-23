@@ -1,8 +1,6 @@
-const suits: string[] = ["spades", "hearts", "clubs", "diamonds"];
+const SUITS: string[] = ["spades", "hearts", "clubs", "diamonds"];
 
-const values: string[] = ["A", "K", "Q", "J", "10", "9", "8", "7", "6"];
-
-const cardSlot: number[] = [0, 0];
+const VALUES: string[] = ["A", "K", "Q", "J", "10", "9", "8", "7", "6"];
 
 const EMPTY_CARD = {
   suit: "",
@@ -32,15 +30,15 @@ const VALIDATION = {
 };
 
 const INITIAL_RESULT_STATE = {
+  hero: {},
+  villain: {},
   ranking: {},
-  winners: ["0%", "0%"],
-  ties: ["0%", "0%"],
+  rounds: {},
 };
 
 export default {
-  cardSlot,
-  suits,
-  values,
+  SUITS,
+  VALUES,
   table,
   EMPTY_CARD,
   VALIDATION,

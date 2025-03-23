@@ -6,38 +6,29 @@ type Card = {
   isHoverable?: boolean;
 };
 
-type Player = Card[];
-
-type Players = Record<string, Player>;
-
 type Hand = Card[];
 
-type HandAssesment = {
+type Players = Record<string, Hand>;
+
+type HandEvaluation = {
   name: string;
   value: number;
   kickers: number;
-  player: string;
 };
+
+type PlayerValuation = Record<string, HandEvaluation>;
 
 type FrequencyCounter = Record<string, number>;
 
-type PokerDataHand = {
-  winners: FrequencyCounter;
-  ties: FrequencyCounter;
-  ranking: FrequencyCounter;
-};
+type Results = Record<string, FrequencyCounter>;
 
-type TotalPokerData = {
-  hero: FrequencyCounter;
-  villain: FrequencyCounter;
-  ranking: FrequencyCounter;
-};
-
-type Results = {
+type PresentableResults = {
   winners: string[];
   ties: string[];
-  ranking: Record<string, string>;
+  ranking: Ranking;
 };
+
+type Ranking = Record<string, string>;
 
 type ValidCards = boolean[];
 
@@ -45,14 +36,14 @@ type ValidationTable = Record<string, ValidCards>;
 
 export {
   Card,
-  Hand,
-  HandAssesment,
   FrequencyCounter,
-  Player,
+  Hand,
+  HandEvaluation,
   Players,
-  PokerDataHand,
+  PlayerValuation,
+  PresentableResults,
+  Ranking,
   Results,
-  TotalPokerData,
   ValidationTable,
   ValidCards,
 };

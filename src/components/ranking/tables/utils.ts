@@ -1,29 +1,65 @@
 import C from "./constants";
-import { Results } from "../../../types";
+import { FrequencyCounter, Players, Ranking, Results } from "../../../types";
 
-const updateEquityTable = ({ winners, ties }: Results) => {
-  const equityTable = [...C.EQUITY_TABLE];
-  if (!winners.length) {
-    return C.EQUITY_TABLE;
-  }
-  equityTable[1][0] = winners[0];
-  equityTable[1][2] = winners[1];
-  equityTable[2][0] = ties[0];
-  equityTable[2][2] = ties[1];
-  return equityTable;
+const numberOfActiveVillains = (table: Players): number => {
+  let villains = -1;
+  Object.values(table).filter((player) => {
+    if (player.length === 2 && player[0].index !== -1) {
+      villains++;
+    }
+  });
+  return villains;
 };
 
-const updateRankingTable = ({
-  ranking,
-}: {
-  ranking: Record<string, string>;
-}) => {
+const getPercentage = (value: number, totalValue: number): string => {
+  if (!value) return "0%";
+  return ((value / totalValue) * 100).toFixed(2) + "%";
+};
+
+const getRankingPercentage = (
+  ranking: FrequencyCounter,
+  total: number
+): Ranking => {
+  const rankingPercentage: Ranking = {};
+  Object.keys(ranking).forEach((key) => {
+    rankingPercentage[key] = getPercentage(ranking[key], total);
+  });
+  return rankingPercentage;
+};
+
+const updateEquityTable = (
+  { hero, villain, rounds }: Results,
+  table: Players
+) => {
+  if (!rounds.total) {
+    return C.EQUITY_TABLE;
+  }
+  const total = rounds.total;
+  const updatedTable = C.EQUITY_TABLE.slice();
+  const villainsTotal = numberOfActiveVillains(table);
+  const heroWinsPercentage = getPercentage(hero.wins, total);
+  const villainsWinPercentage = getPercentage(villain.wins, total);
+  const heroTiesPercentage = getPercentage(hero.ties, total);
+  const villainsTiesPercentage = getPercentage(
+    villain.ties,
+    total / villainsTotal
+  );
+  updatedTable[3] = heroWinsPercentage;
+  updatedTable[5] = villainsWinPercentage;
+  updatedTable[6] = heroTiesPercentage;
+  updatedTable[8] = villainsTiesPercentage;
+  return updatedTable;
+};
+
+const updateRankingTable = (results: Results) => {
+  const { ranking, rounds } = results;
   const rankingTable = { ...C.RANKING_TABLE };
-  if (!Object.keys(ranking).length) {
+  if (!rounds.total) {
     return rankingTable;
   }
+  const rankingPercentage = getRankingPercentage(ranking, rounds.total);
   Object.keys(ranking).forEach((key) => {
-    rankingTable[key] = ranking[key];
+    rankingTable[key] = rankingPercentage[key];
   });
   return rankingTable;
 };

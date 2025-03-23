@@ -1,16 +1,10 @@
-import {
-  Card,
-  FrequencyCounter,
-  Hand,
-  Players,
-  PokerDataHand,
-} from "../../types";
+import { Hand, FrequencyCounter, Players, Results } from "../../types";
 
 const getCombinations = (
-  cards: Card[],
+  cards: Hand,
   combinationLength: number,
   combinations: Hand[] = [],
-  inProgressCombination: Card[] = [],
+  inProgressCombination: Hand = [],
   index: number = 0
 ) => {
   if (!combinationLength) {
@@ -35,39 +29,16 @@ const getCombinations = (
   return combinations;
 };
 
-const getCommunityCombinations = (deck: Card[], community: Card[]): Hand[] => {
+const getCommunityCombinations = (deck: Hand, community: Hand): Hand[] => {
   if (community.length === 5) {
     return [community];
   }
-
   const remainingDeck = deck.filter((card) => !card.isSelected);
   const combinations = getCombinations(remainingDeck, 5 - community.length);
-  const communities = [];
-  for (const combination of combinations) {
-    communities.push(...getCombinations([...community, ...combination], 5));
-  }
+  const communities = combinations.flatMap((combination) =>
+    getCombinations([...community, ...combination], 5)
+  );
   return communities;
-};
-
-const getPercentage = (value: number, totalValue: number): string => {
-  if (!value) return "0%";
-  return ((value / totalValue) * 100).toFixed(2) + "%";
-};
-
-const getVillainsTiesPercentage = (
-  value: number,
-  totalValue: number,
-  villains: number
-): string => {
-  if (!value) return "0%";
-  return (((value / totalValue) * 100) / villains).toFixed(2) + "%";
-};
-const getRankingPercentage = (ranking: FrequencyCounter, total: number) => {
-  const rankingPercentage: Record<string, string> = {};
-  Object.keys(ranking).forEach((key) => {
-    rankingPercentage[key] = getPercentage(ranking[key], total);
-  });
-  return rankingPercentage;
 };
 
 const splitArrayToChunks = (communities: Hand[], size: number) => {
@@ -80,26 +51,22 @@ const splitArrayToChunks = (communities: Hand[], size: number) => {
 
 const updateFrequencyCounter = (
   object: FrequencyCounter,
-  key: string,
-  value: number
+  key: string
 ): void => {
-  object[key] = (object[key] ?? 0) + value;
+  object[key] = (object[key] ?? 0) + 1;
 };
 
-const filterPlayers = (table: Players): Players => {
+const filterActivePlayers = (table: Players): Players => {
   const players: Players = {};
-  Object.keys(table).forEach((key) => {
-    if (table[key].length === 2 && table[key][0].index !== -1) {
-      players[key] = table[key];
+  Object.entries(table).filter(([key, value]) => {
+    if (value.length === 2 && value[0].index !== -1) {
+      players[key] = value;
     }
   });
   return players;
 };
 
-const runWorker = (
-  communities: Hand[],
-  players: Players
-): Promise<PokerDataHand> =>
+const runWorker = (communities: Hand[], players: Players): Promise<Results> =>
   new Promise((resolve) => {
     const myWorker = new Worker(new URL("./worker.js", import.meta.url), {
       type: "module",
@@ -113,10 +80,7 @@ const runWorker = (
 export default {
   getCombinations,
   getCommunityCombinations,
-  getPercentage,
-  getRankingPercentage,
-  getVillainsTiesPercentage,
-  filterPlayers,
+  filterActivePlayers,
   splitArrayToChunks,
   runWorker,
   updateFrequencyCounter,

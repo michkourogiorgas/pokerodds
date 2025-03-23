@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { usePokerDispatch, usePokerSelector } from "../../../store/hooks";
-import { runPokerOdds } from "../../logic/runCalculator";
+import { runPokerOdds } from "../../poker/runCalculator";
 import {
   deckActions,
   tableActions,
@@ -29,8 +29,7 @@ const ButtonArea = () => {
   const handleRun = async () => {
     setIsModalOpen(true);
     runPokerOdds(deck, table).then((results) => {
-      const { winners, ties, ranking } = results;
-      dispatch(resultsActions.updateResults({ winners, ties, ranking }));
+      dispatch(resultsActions.updateResults({ results }));
       setIsModalOpen(false);
     });
   };

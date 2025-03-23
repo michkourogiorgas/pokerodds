@@ -85,9 +85,11 @@ const resultsSlice = createSlice({
   reducers: {
     reset: () => initialResultState,
     updateResults: (state, action) => {
-      state.winners = action.payload.winners;
-      state.ties = action.payload.ties;
-      state.ranking = action.payload.ranking;
+      const { hero, villain, ranking, rounds } = action.payload.results;
+      state.hero = hero;
+      state.villain = villain;
+      state.ranking = ranking;
+      state.rounds = rounds;
     },
   },
 });

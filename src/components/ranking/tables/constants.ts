@@ -1,7 +1,13 @@
 const EQUITY_TABLE = [
-  ["Hero", "", "Villains"],
-  ["0%", "Win", "0%"],
-  ["0%", "Tie", "0%"],
+  "Hero",
+  "",
+  "Villains",
+  "0%",
+  "Win",
+  "0%",
+  "0%",
+  "Tie",
+  "0%",
 ];
 
 const RANKING_TABLE: Record<string, string> = {
