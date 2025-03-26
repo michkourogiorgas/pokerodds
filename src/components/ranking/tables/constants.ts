@@ -1,4 +1,6 @@
-const EQUITY_TABLE = [
+type StringObject = Record<string, string>;
+
+const EQUITY_TABLE: string[] = [
   "Hero",
   "",
   "Villains",
@@ -10,7 +12,7 @@ const EQUITY_TABLE = [
   "0%",
 ];
 
-const RANKING_TABLE: Record<string, string> = {
+const RANKING_TABLE: StringObject = {
   Rank: "Hero",
   "Flush Royal": "0%",
   "Straight Flush": "0%",
@@ -24,4 +26,15 @@ const RANKING_TABLE: Record<string, string> = {
   "High Card": "0%",
 };
 
-export default { EQUITY_TABLE, RANKING_TABLE };
+const TEXT_COLOR: StringObject = {
+  HERO: "text-[#007c7b]",
+  BLACK: "text-[#393939]",
+  VILLAINS: "text-[#731C16]",
+};
+
+const FONT_SIZE: StringObject = {
+  XLARGE: "text-xl",
+  SMALL: "text-xs",
+};
+
+export default { EQUITY_TABLE, RANKING_TABLE, FONT_SIZE, TEXT_COLOR };

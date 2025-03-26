@@ -1,12 +1,10 @@
-import { ReactNode } from "react";
-
 type ButtonProps = {
   handleClick: () => void;
   isDisabled: boolean;
-  children: ReactNode;
+  name: string;
 };
 
-const Button = ({ handleClick, isDisabled, children }: ButtonProps) => {
+const Button = ({ handleClick, isDisabled, name }: ButtonProps) => {
   return (
     <button
       disabled={isDisabled}
@@ -14,7 +12,7 @@ const Button = ({ handleClick, isDisabled, children }: ButtonProps) => {
       className="w-full bg-[#004e61] hover:bg-[#007c7b] text-white font-bold py-2 px-4 border border-[#007c7b] rounded-lg
         disabled:bg-[#004e61]/90 disabled:text-gray-500 "
     >
-      {children}
+      {name}
     </button>
   );
 };

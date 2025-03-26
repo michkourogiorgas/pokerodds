@@ -21,14 +21,17 @@ const SUIT_SYMBOL: SuitToColor = {
   diamonds: "after:content-['♦']",
 };
 
+const CLICKABLE: string = "group-hover:flex group-hover:flex-col";
+
 const NO_OPACITY: string = "opacity-100";
 
 const OPACITY: string = "opacity-30";
 
 export default {
   BG_COLOR,
-  TEXT_COLOR,
-  SUIT_SYMBOL,
+  CLICKABLE,
   NO_OPACITY,
   OPACITY,
+  SUIT_SYMBOL,
+  TEXT_COLOR,
 };

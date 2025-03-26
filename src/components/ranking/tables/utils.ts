@@ -1,5 +1,5 @@
 import C from "./constants";
-import { FrequencyCounter, Players, Ranking, Results } from "../../../types";
+import { Players, Results } from "../../../types";
 
 const numberOfActiveVillains = (table: Players): number => {
   let villains = -1;
@@ -14,17 +14,6 @@ const numberOfActiveVillains = (table: Players): number => {
 const getPercentage = (value: number, totalValue: number): string => {
   if (!value) return "0%";
   return ((value / totalValue) * 100).toFixed(2) + "%";
-};
-
-const getRankingPercentage = (
-  ranking: FrequencyCounter,
-  total: number
-): Ranking => {
-  const rankingPercentage: Ranking = {};
-  Object.keys(ranking).forEach((key) => {
-    rankingPercentage[key] = getPercentage(ranking[key], total);
-  });
-  return rankingPercentage;
 };
 
 const updateEquityTable = (
@@ -53,13 +42,13 @@ const updateEquityTable = (
 
 const updateRankingTable = (results: Results) => {
   const { ranking, rounds } = results;
+  const total = rounds.total;
   const rankingTable = { ...C.RANKING_TABLE };
   if (!rounds.total) {
     return rankingTable;
   }
-  const rankingPercentage = getRankingPercentage(ranking, rounds.total);
   Object.keys(ranking).forEach((key) => {
-    rankingTable[key] = rankingPercentage[key];
+    rankingTable[key] = getPercentage(ranking[key], total);
   });
   return rankingTable;
 };

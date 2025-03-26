@@ -20,7 +20,7 @@ const CardSlot = ({ position, slotIndex, cardIndex }: CardSlotProps) => {
         value={card.value}
         index={card.index}
         isSelected={false}
-        isHoverable
+        isInTable
       />
     );
   } else {

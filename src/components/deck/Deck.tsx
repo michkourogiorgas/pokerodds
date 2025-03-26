@@ -13,7 +13,6 @@ const Deck = () => {
             value={value}
             index={index}
             isSelected={isSelected}
-            isHoverable={false}
           />
         );
       })}

@@ -5,16 +5,8 @@ import { Card as CardProps } from "../../types";
 
 import C from "./constants";
 
-const Card = ({
-  suit,
-  value,
-  index,
-  isSelected,
-  isHoverable = false,
-}: CardProps) => {
+const Card = ({ suit, value, index, isSelected, isInTable }: CardProps) => {
   const dispatch = usePokerDispatch();
-  const opacity = isSelected ? C.OPACITY : C.NO_OPACITY;
-  const isVisible = isHoverable && "group-hover:flex group-hover:flex-col";
 
   const handleDragStart = (event: DragEvent<HTMLDivElement>) => {
     event.dataTransfer.setData("text/plain", index.toString());
@@ -27,22 +19,28 @@ const Card = ({
     });
   };
 
+  const opacity = isSelected ? C.OPACITY : C.NO_OPACITY;
+  const isClickable = isInTable && C.CLICKABLE;
+  const background = C.BG_COLOR[suit];
+  const text = C.TEXT_COLOR[suit];
+  const symbol = C.SUIT_SYMBOL[suit];
+
   return (
     <>
       <div
         id={index.toString()}
-        draggable={!isSelected && !isHoverable}
+        draggable={!isSelected && !isInTable}
         onDragStart={handleDragStart}
-        className={`group relative w-9.75 h-13 flex flex-col px-0.5 
-          ${C.BG_COLOR[suit]} ${opacity} ${C.TEXT_COLOR[suit]}
-          border-2 border-white text-white rounded-sm skew-x-0`}
+        className={`group relative w-9.75 h-13 flex flex-col px-0.5 border-2 border-white text-white rounded-sm skew-x-0
+          ${background} ${opacity} ${text}`}
       >
         <div className="text-[8px] text-left">{value}</div>
-        <div className={`text-md text-center ${C.SUIT_SYMBOL[suit]}`} />
+        <div className={`text-md text-center ${symbol}`} />
         <div className="text-[8px] rotate-180">{value}</div>
         <div
           onClick={handleClick}
-          className={`hidden absolute inset-0 ${isVisible} items-center justify-center bg-black/70 ${C.TEXT_COLOR[suit]} text-lg cursor-pointer rounded-sm`}
+          className={`hidden absolute inset-0 items-center justify-center
+           bg-black/70 text-lg cursor-pointer rounded-sm ${isClickable} ${text}`}
         >
           X
         </div>

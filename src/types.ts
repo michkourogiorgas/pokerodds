@@ -3,7 +3,7 @@ type Card = {
   value: string;
   index: number;
   isSelected: boolean;
-  isHoverable?: boolean;
+  isInTable?: boolean;
 };
 
 type Hand = Card[];

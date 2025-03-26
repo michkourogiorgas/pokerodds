@@ -6,6 +6,7 @@ import {
   validateAsync,
 } from "../../../store/store";
 import cardSlot from "../../../../public/img/cardSlot.png";
+import C from "./constants";
 
 type EmptyCardSlotProps = {
   position: string;
@@ -40,12 +41,7 @@ const EmptyCardSlot = ({ position, slotIndex }: EmptyCardSlotProps) => {
   };
 
   const isValid = validation[position][slotIndex];
-
-  const border = !isValid
-    ? "border-2 border-red-600"
-    : isHovered
-    ? "border-2 border-green-600"
-    : "";
+  const border = isHovered ? C.GREEN_BORDER : !isValid ? C.RED_BORDER : "";
 
   return (
     <div onDrop={handleDrop} onDragLeave={handleLeave} onDragOver={handleOver}>

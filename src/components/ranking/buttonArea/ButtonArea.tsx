@@ -14,10 +14,11 @@ import U from "./utils";
 const ButtonArea = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = usePokerDispatch();
+
   const deck = usePokerSelector((state) => state.deck);
   const table = usePokerSelector((state) => state.table);
   const validation = usePokerSelector((state) => state.validation);
-  const isDisabled = U.hasFalse(validation);
+  const isDisabled = U.hasEmptySlots(validation);
 
   const handleReset = (): void => {
     dispatch(deckActions.reset());
@@ -37,12 +38,8 @@ const ButtonArea = () => {
   return (
     <div className="flex flex-row place-items-center gap-4 my-4 ">
       {isModalOpen && !U.hasCommunity(table.community) && <Modal />}
-      <Button handleClick={handleRun} isDisabled={isDisabled}>
-        Run
-      </Button>
-      <Button handleClick={handleReset} isDisabled={false}>
-        Reset
-      </Button>
+      <Button handleClick={handleRun} isDisabled={isDisabled} name={"Run"} />
+      <Button handleClick={handleReset} isDisabled={false} name={"Reset"} />
     </div>
   );
 };
