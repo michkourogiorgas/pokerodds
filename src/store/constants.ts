@@ -9,7 +9,7 @@ const EMPTY_CARD = {
   isSelected: false,
 };
 
-const table = {
+const TABLE = {
   villain1: [EMPTY_CARD, EMPTY_CARD],
   villain2: [EMPTY_CARD, EMPTY_CARD],
   villain3: [EMPTY_CARD, EMPTY_CARD],
@@ -39,7 +39,7 @@ const INITIAL_RESULT_STATE = {
 export default {
   SUITS,
   VALUES,
-  table,
+  TABLE,
   EMPTY_CARD,
   VALIDATION,
   INITIAL_RESULT_STATE,

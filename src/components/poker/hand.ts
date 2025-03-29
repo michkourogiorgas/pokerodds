@@ -23,7 +23,6 @@ const prepareHand = (hand: Hand) => {
     cardsStrength.sort((a, b) => a - b);
     areCardsConsecutive = cardsStrength[4] - cardsStrength[0] === 4;
   }
-  console.log(cardsStrength);
   return {
     cardsFrequency,
     isFlush,
@@ -45,7 +44,6 @@ const evaluateHandStrength = (hand: Hand) => {
     areCardsConsecutive,
     cardsStrength,
   } = prepareHand(hand);
-  console.log(cardsStrength);
 
   const frequencies = Object.values(cardsFrequency);
 

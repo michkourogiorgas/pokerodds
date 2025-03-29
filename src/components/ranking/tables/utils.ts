@@ -19,6 +19,7 @@ const updateEquityTable = ({ hero, villain, rounds: { total } }: Results) => {
     getPercentage(hero.ties, total),
     C.EQUITY_TABLE[7],
     getPercentage(villain.ties, total),
+    `Total community combinations: ${total}`,
   ];
 };
 

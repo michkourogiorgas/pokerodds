@@ -1,6 +1,6 @@
 import CardSlot from "../cardSlot";
-import C from "./constants";
 import { Hand } from "../../../types";
+import C from "./constants";
 
 type PlayerProps = {
   player: Hand;

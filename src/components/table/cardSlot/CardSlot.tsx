@@ -1,6 +1,6 @@
 import { usePokerSelector } from "../../../store/hooks";
-import EmptyCardSlot from "./EmptySlot";
 import Card from "../../card/Card";
+import EmptyCardSlot from "./EmptySlot";
 
 type CardSlotProps = {
   position: string;

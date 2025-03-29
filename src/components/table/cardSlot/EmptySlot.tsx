@@ -1,10 +1,7 @@
 import { useState, DragEvent } from "react";
+import { deckActions } from "../../../store/deckSlice";
+import { updateTableAsync, validateAsync } from "../../../store/asyncActions";
 import { usePokerDispatch, usePokerSelector } from "../../../store/hooks";
-import {
-  deckActions,
-  updateTableAsync,
-  validateAsync,
-} from "../../../store/store";
 import cardSlot from "../../../../public/img/cardSlot.png";
 import C from "./constants";
 

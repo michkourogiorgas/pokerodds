@@ -10,6 +10,7 @@ const EQUITY_TABLE: string[] = [
   "0%",
   "Tie",
   "0%",
+  "",
 ];
 
 const RANKING_TABLE: StringObject = {

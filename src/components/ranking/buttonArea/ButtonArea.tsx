@@ -1,14 +1,12 @@
 import { useState } from "react";
+import { deckActions } from "../../../store/deckSlice";
+import { tableActions } from "../../../store/tableSlice";
+import { validationActions } from "../../../store/validationSlice";
+import { resultsActions } from "../../../store/resultsSlice";
 import { usePokerDispatch, usePokerSelector } from "../../../store/hooks";
-import { runPokerOdds } from "../../poker/runCalculator";
-import {
-  deckActions,
-  tableActions,
-  validationActions,
-  resultsActions,
-} from "../../../store/store";
 import Button from "./Button";
 import Modal from "../../modal/Modal";
+import { runPokerOdds } from "../../poker/runCalculator";
 import U from "./utils";
 
 const ButtonArea = () => {
@@ -37,7 +35,7 @@ const ButtonArea = () => {
 
   return (
     <div className="flex flex-row place-items-center gap-4 my-4 ">
-      {isLoading && !U.hasCommunity(table.community) && <Modal />}
+      <Modal isOpen={isLoading && !U.hasCommunity(table.community)} />
       <Button handleClick={handleRun} isDisabled={isDisabled} name={"Run"} />
       <Button handleClick={handleReset} isDisabled={false} name={"Reset"} />
     </div>

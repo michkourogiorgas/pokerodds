@@ -1,20 +1,24 @@
-import loader from "../../../public/img/load.gif";
+import { createPortal } from "react-dom";
 
-const Modal = () => {
-  return (
-    <dialog
-      open
-      className="w-full h-full top-0 z-10 bg-gray-300/90 text-[#022436]"
-    >
-      <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-90 h-50">
-        <img src={loader} alt="loading..." className="w-50 h-50 ml-20" />
-        <p>
-          Calculations may take up to 20 seconds. Processing more than 8000000
+const Modal = ({ isOpen }: { isOpen: boolean }) => {
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-300/90">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+        <img
+          src="/img/load.gif"
+          alt="loading..."
+          className="mx-auto w-16 h-16"
+        />
+        <p className="mt-4">
+          Calculations may take up to 15 seconds. Processing more than 8,000,000
           computations. To speed up the process, consider providing flop cards
           to reduce the number of possible scenarios.
         </p>
       </div>
-    </dialog>
+    </div>,
+    document.body
   );
 };
 

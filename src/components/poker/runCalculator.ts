@@ -4,8 +4,6 @@ import { Hand, Players, Results } from "../../types";
 
 const runPokerOdds = async (deck: Hand, table: Players): Promise<Results> =>
   new Promise((resolve) => {
-    const a = new Date();
-
     const community = table.community.filter((card) => card.index !== -1);
     const communities = U.getCommunityCombinations(deck, community);
     const players = U.filterActivePlayers(table);
@@ -21,8 +19,6 @@ const runPokerOdds = async (deck: Hand, table: Players): Promise<Results> =>
     ]).then((splitResults: Results[]) => {
       const activeVillains = Object.keys(players).length - 1;
       const results = mergeResults(splitResults, activeVillains);
-      const b = new Date();
-      console.log(b - a);
       resolve(results);
     });
   });

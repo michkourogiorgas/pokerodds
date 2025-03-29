@@ -1,6 +1,7 @@
 import { DragEvent } from "react";
+import { deckActions } from "../../store/deckSlice";
+import { removeCardAsync, validateAsync } from "../../store/asyncActions";
 import { usePokerDispatch } from "../../store/hooks";
-import { deckActions, removeCardAsync, validateAsync } from "../../store/store";
 import { Card as CardProps } from "../../types";
 import C from "./constants";
 

@@ -12,8 +12,9 @@ const EquityTable = () => {
 
   const getFontStyle = (index: number) => `
     ${index > 2 ? "text-xs" : fontSize[index % fontSize.length]}
-      ${fontColor[index % fontSize.length]}
-      text-center font-sans font-medium 
+    ${fontColor[index % fontSize.length]}
+    ${index > 8 ? "col-span-3 text-[#393939]" : "col-span-1"}
+    text-center font-sans font-medium 
   `;
 
   return (

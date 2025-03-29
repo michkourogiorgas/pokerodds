@@ -3,7 +3,7 @@ import {
   useSelector,
   type TypedUseSelectorHook,
 } from "react-redux";
-import { PokerDispatch, RootState } from "./store";
+import { PokerDispatch, RootState } from "./index";
 
 type DispatchFunction = () => PokerDispatch;
 
