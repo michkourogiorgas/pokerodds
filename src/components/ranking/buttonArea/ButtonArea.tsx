@@ -12,7 +12,7 @@ import Modal from "../../modal/Modal";
 import U from "./utils";
 
 const ButtonArea = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = usePokerDispatch();
 
   const deck = usePokerSelector((state) => state.deck);
@@ -27,17 +27,17 @@ const ButtonArea = () => {
     dispatch(resultsActions.reset());
   };
 
-  const handleRun = async () => {
-    setIsModalOpen(true);
+  const handleRun = () => {
+    setIsLoading(true);
     runPokerOdds(deck, table).then((results) => {
       dispatch(resultsActions.updateResults({ results }));
-      setIsModalOpen(false);
+      setIsLoading(false);
     });
   };
 
   return (
     <div className="flex flex-row place-items-center gap-4 my-4 ">
-      {isModalOpen && !U.hasCommunity(table.community) && <Modal />}
+      {isLoading && !U.hasCommunity(table.community) && <Modal />}
       <Button handleClick={handleRun} isDisabled={isDisabled} name={"Run"} />
       <Button handleClick={handleReset} isDisabled={false} name={"Reset"} />
     </div>

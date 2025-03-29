@@ -2,7 +2,6 @@ import { DragEvent } from "react";
 import { usePokerDispatch } from "../../store/hooks";
 import { deckActions, removeCardAsync, validateAsync } from "../../store/store";
 import { Card as CardProps } from "../../types";
-
 import C from "./constants";
 
 const Card = ({ suit, value, index, isSelected, isInTable }: CardProps) => {

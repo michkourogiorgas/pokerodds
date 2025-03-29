@@ -34,26 +34,26 @@ const getCommunityCombinations = (deck: Hand, community: Hand): Hand[] => {
     return [community];
   }
   const remainingDeck = deck.filter((card) => !card.isSelected);
-  const combinations = getCombinations(remainingDeck, 5 - community.length);
-  const communities = combinations.flatMap((combination) =>
-    getCombinations([...community, ...combination], 5)
-  );
-  return communities;
+  const missingCards = 5 - community.length;
+  const combinations = getCombinations(remainingDeck, missingCards);
+  return community.length
+    ? combinations.map((combination) => [...community, ...combination])
+    : combinations;
 };
 
-const splitArrayToChunks = (communities: Hand[], size: number) => {
-  const chunksNumber = Math.ceil(communities.length / size);
-  const chunksArray = Array(chunksNumber);
-  return [...chunksArray].map((_, index) => {
-    return communities.slice(index * size, (index + 1) * size);
-  });
+const splitArrayToChunks = (communities: Hand[], size: number): Hand[][] => {
+  const chunks: Hand[][] = [];
+  for (let i = 0; i < communities.length; i += size) {
+    chunks.push(communities.slice(i, i + size));
+  }
+  return chunks;
 };
 
 const updateFrequencyCounter = (
   object: FrequencyCounter,
   key: string
 ): void => {
-  object[key] = (object[key] ?? 0) + 1;
+  object[key] = (object[key] || 0) + 1;
 };
 
 const filterActivePlayers = (table: Players): Players => {
@@ -77,11 +77,19 @@ const runWorker = (communities: Hand[], players: Players): Promise<Results> =>
     myWorker.postMessage({ communities, players });
   });
 
+const numberOfActiveVillains = (table: Players): number =>
+  Object.values(table).reduce((accumulator, player) => {
+    return player.length === 2 && player[0].index !== -1
+      ? accumulator + 1
+      : accumulator;
+  }, 0);
+
 export default {
+  filterActivePlayers,
   getCombinations,
   getCommunityCombinations,
-  filterActivePlayers,
+  numberOfActiveVillains,
   splitArrayToChunks,
-  runWorker,
   updateFrequencyCounter,
+  runWorker,
 };

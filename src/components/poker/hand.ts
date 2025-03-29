@@ -2,92 +2,75 @@ import C from "./constants";
 import K from "./kickers";
 import { Hand, FrequencyCounter } from "../../types";
 
-const sortCards = (hand: Hand): Hand =>
-  hand.sort((a, b) => {
-    return C.CARD_STRENGTH[a.value] - C.CARD_STRENGTH[b.value];
-  });
-
-const areConsecutive = (hand: Hand): boolean =>
-  hand.every(
-    (card, index) =>
-      !index ||
-      C.CARD_STRENGTH[card.value] - C.CARD_STRENGTH[hand[index - 1].value] === 1
-  );
-
 const prepareHand = (hand: Hand) => {
   const cardsFrequency: FrequencyCounter = {};
   const suitsFrequency: FrequencyCounter = {};
-  for (const card of hand) {
-    const { suit, value } = card;
-    cardsFrequency[value] = cardsFrequency[value] + 1 || 1;
-    suitsFrequency[suit] = suitsFrequency[suit] + 1 || 1;
+  const cardsStrength: number[] = [];
+  for (let i = 0; i < hand.length; i++) {
+    const { suit, value } = hand[i];
+    cardsFrequency[value] = (cardsFrequency[value] || 0) + 1;
+    suitsFrequency[suit] = (suitsFrequency[suit] || 0) + 1;
+    cardsStrength.push(C.CARD_STRENGTH[value]);
   }
-  return { cardsFrequency, suitsFrequency };
-};
 
-const getHandSummary = (
-  hand: Hand,
-  cardsFrequency: FrequencyCounter,
-  suitsFrequency: FrequencyCounter
-) => {
-  const areCardsDifferent = Object.keys(cardsFrequency).length === 5;
-  const isFlush = Object.values(suitsFrequency).length === 1;
-  const isStraight = areConsecutive(hand);
-  const hasAce = !!cardsFrequency["A"];
-  const isQuads = Object.values(cardsFrequency).some((value) => value === 4);
-  const isFullHouse =
-    Object.values(cardsFrequency).some((value) => value === 3) &&
-    Object.values(cardsFrequency).some((value) => value === 2);
-  const isThreeOfAKind = Object.values(cardsFrequency).some(
-    (value) => value === 3
-  );
-  const isTwoPair = Object.keys(cardsFrequency).length === 3;
+  const uniqueCardsCount = Object.keys(cardsFrequency).length;
+  const areCardsDifferent = uniqueCardsCount === 5;
+  const isFlush = Object.keys(suitsFrequency).length === 1;
+  const hasAce = Boolean(cardsFrequency["A"]);
+
+  let areCardsConsecutive = false;
+  if (areCardsDifferent) {
+    cardsStrength.sort((a, b) => a - b);
+    areCardsConsecutive = cardsStrength[4] - cardsStrength[0] === 4;
+  }
+  console.log(cardsStrength);
   return {
-    areCardsDifferent,
+    cardsFrequency,
     isFlush,
-    isStraight,
     hasAce,
-    isQuads,
-    isFullHouse,
-    isThreeOfAKind,
-    isTwoPair,
+    areCardsDifferent,
+    areCardsConsecutive,
+    cardsStrength,
   };
 };
 
-const evaluateHandStrength = (
-  hand: Hand,
-  cardsFrequency: FrequencyCounter,
-  suitsFrequency: FrequencyCounter
-) => {
-  let name: string = "";
-  let kickers: number = 0;
+const evaluateHandStrength = (hand: Hand) => {
+  let name = "";
+  let kickers = 0;
   const {
-    areCardsDifferent,
+    cardsFrequency,
     isFlush,
-    isStraight,
     hasAce,
-    isQuads,
-    isFullHouse,
-    isThreeOfAKind,
-    isTwoPair,
-  } = getHandSummary(hand, cardsFrequency, suitsFrequency);
+    areCardsDifferent,
+    areCardsConsecutive,
+    cardsStrength,
+  } = prepareHand(hand);
+  console.log(cardsStrength);
+
+  const frequencies = Object.values(cardsFrequency);
+
   if (areCardsDifferent) {
-    if (isFlush && isStraight && hasAce) {
+    if (isFlush && areCardsConsecutive && hasAce) {
       name = "Flush Royal";
-    } else if (isFlush && isStraight) {
+    } else if (isFlush && areCardsConsecutive) {
       name = "Straight Flush";
-      kickers = K.straightFlush(hand);
+      kickers = cardsStrength[0];
     } else if (isFlush) {
       name = "Flush";
-      kickers = K.flush(hand);
-    } else if (isStraight) {
+      kickers = K.flush(cardsFrequency);
+    } else if (areCardsConsecutive) {
       name = "Straight";
-      kickers = K.straight(hand);
+      kickers = cardsStrength[0];
     } else {
       name = "High Card";
       kickers = K.highCard(cardsFrequency);
     }
   } else {
+    const isQuads = frequencies.includes(4);
+    const isFullHouse = frequencies.includes(3) && frequencies.includes(2);
+    const isThreeOfAKind = frequencies.includes(3) && !isFullHouse;
+    const isTwoPair = frequencies.filter((count) => count === 2).length === 2;
+
     if (isQuads) {
       name = "Quads";
       kickers = K.quads(cardsFrequency);
@@ -105,14 +88,9 @@ const evaluateHandStrength = (
       kickers = K.onePair(cardsFrequency);
     }
   }
+
   const value = C.HAND_STRENGTH[name];
   return { name, value, kickers };
 };
 
-const evaluateHand = (hand: Hand) => {
-  const sortedHand = sortCards(hand);
-  const { cardsFrequency, suitsFrequency } = prepareHand(sortedHand);
-  return evaluateHandStrength(sortedHand, cardsFrequency, suitsFrequency);
-};
-
-export { evaluateHand };
+export { evaluateHandStrength };

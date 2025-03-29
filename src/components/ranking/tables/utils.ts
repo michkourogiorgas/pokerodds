@@ -1,50 +1,34 @@
 import C from "./constants";
-import { Players, Results } from "../../../types";
-
-const numberOfActiveVillains = (table: Players): number => {
-  let villains = -1;
-  Object.values(table).filter((player) => {
-    if (player.length === 2 && player[0].index !== -1) {
-      villains++;
-    }
-  });
-  return villains;
-};
+import { Results } from "../../../types";
 
 const getPercentage = (value: number, totalValue: number): string => {
-  if (!value) return "0%";
-  return ((value / totalValue) * 100).toFixed(2) + "%";
+  return totalValue ? ((value / totalValue) * 100).toFixed(2) + "%" : "0%";
 };
 
-const updateEquityTable = (
-  { hero, villain, rounds }: Results,
-  table: Players
-) => {
-  if (!rounds.total) {
-    return C.EQUITY_TABLE;
-  }
-  const total = rounds.total;
+const updateEquityTable = ({ hero, villain, rounds: { total } }: Results) => {
   const updatedTable = C.EQUITY_TABLE.slice();
-  const villainsTotal = numberOfActiveVillains(table);
-  const heroWinsPercentage = getPercentage(hero.wins, total);
-  const villainsWinPercentage = getPercentage(villain.wins, total);
-  const heroTiesPercentage = getPercentage(hero.ties, total);
-  const villainsTiesPercentage = getPercentage(
-    villain.ties,
-    total / villainsTotal
-  );
-  updatedTable[3] = heroWinsPercentage;
-  updatedTable[5] = villainsWinPercentage;
-  updatedTable[6] = heroTiesPercentage;
-  updatedTable[8] = villainsTiesPercentage;
-  return updatedTable;
+  if (!total) {
+    return updatedTable;
+  }
+
+  return [
+    ...C.EQUITY_TABLE.slice(0, 3),
+    getPercentage(hero.wins, total),
+    C.EQUITY_TABLE[4],
+    getPercentage(villain.wins, total),
+    getPercentage(hero.ties, total),
+    C.EQUITY_TABLE[7],
+    getPercentage(villain.ties, total),
+  ];
 };
 
 const updateRankingTable = (results: Results) => {
-  const { ranking, rounds } = results;
-  const total = rounds.total;
+  const {
+    ranking,
+    rounds: { total },
+  } = results;
   const rankingTable = { ...C.RANKING_TABLE };
-  if (!rounds.total) {
+  if (!total) {
     return rankingTable;
   }
   Object.keys(ranking).forEach((key) => {
